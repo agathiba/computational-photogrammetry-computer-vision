@@ -15,6 +15,11 @@ Algorithmic implementations in **Python (NumPy, OpenCV)** covering projective ge
   * Construction and application of the projective rectification matrix $H_p$ coupled with dynamic canvas re-mapping to prevent coordinate clipping.
 * 📄 **[Technical Report (PDF - Greek)](./HW1_Affine_Reconstruction_Vanishing_Points.pdf)**
 
+<p align="center">
+  <img src="images/affine_rectification.png" alt="Original image, rectification without correction, and affine rectification using vanishing points">
+  <br><em>Original image, rectification without correction, and affine rectification using vanishing points</em>
+</p>
+
 ---
 
 ### 2. Camera Projection Matrix Estimation & Geometric Decomposition (DLT)
@@ -38,6 +43,11 @@ Algorithmic implementations in **Python (NumPy, OpenCV)** covering projective ge
   * Evaluated individual reprojection residuals, isolating outliers to achieve a global $RMSE = 0.17\text{ cm}$.
   * Generated true-to-scale rectified ortho-images applying combined transformation pipelines ($H_{total} = \text{Scale} \cdot \text{Translate} \cdot H$) with defined physical ground sample distance ($12.5\text{ px/cm}$).
 * 📄 **[Technical Report (PDF - Greek)](./HW3_Planar_Homography_Metric_Rectification.pdf)**
+
+<p align="center">
+  <img src="images/metric_rectification_chessboard.png" width="700" alt="Planar homography: original oblique photo (left) and metric rectification (right)">
+  <br><em>Planar homography: original oblique photo (left) and metric rectification (right)</em>
+</p>
 
 ---
 
