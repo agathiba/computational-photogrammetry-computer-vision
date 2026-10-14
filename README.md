@@ -28,7 +28,7 @@ Algorithmic implementations in **Python (NumPy, OpenCV)** covering projective ge
   * **Direct Linear Transformation (DLT):** Formulated the homogeneous linear system $Ap = 0$ ($36 \times 12$ coefficient matrix from 18 ground control points).
   * **Singular Value Decomposition (SVD):** Solved for the optimal projection matrix $P$ ($A = U D V^T$, extracting the eigenvector corresponding to the smallest singular value).
   * **Reprojection Error:** Validated spatial accuracy achieving a sub-pixel root mean square reprojection error ($\sigma_0 = 0.46$ px).
-  * **Matrix Decomposition (QR):** Decomposed submatrix $B_{3 \times 3}$ via QR factorization to extract:
+  * **Matrix Decomposition (RQ):** Decomposed submatrix $B_{3 \times 3}$ via RQ factorization to extract:
     * **Camera Intrinsic Matrix ($K$):** Calibrated focal length ($c = 2472.02$), principal point $(x_0, y_0) = (-36.8, -17.9)$, skew, and relative scale factor.
     * **Extrinsic Parameters:** Rotation matrix $R$ (Euler angles: $\omega, \varphi, \kappa$) and camera projection center $X_0 = -B^{-1} p_4$.
 * 📄 **[Technical Report (PDF - Greek)](./HW2_Projection_Matrix_DLT_Calibration.pdf)**
@@ -39,8 +39,8 @@ Algorithmic implementations in **Python (NumPy, OpenCV)** covering projective ge
 * **Objective:** Estimation of 2D projective transformation between planar physical targets and image planes to produce metric ortho-rectified imagery.
 * **Methodology:**
   * Measured control points across a planar calibration grid ($40 \times 40\text{ cm}$).
-  * Computed homography $H$ and inverse transform $H^{-1}$ using OpenCV's normalized transformation algorithms.
-  * Evaluated individual reprojection residuals, isolating outliers to achieve a global $RMSE = 0.17\text{ cm}$.
+  * Computed homography $H$ and inverse transform $H^{-1}$ from 9 control points with `cv2.findHomography` (least squares).
+  * Evaluated the reprojection residual of each control point, achieving a global $RMSE = 0.17\text{ cm}$.
   * Generated true-to-scale rectified ortho-images applying combined transformation pipelines ($H_{total} = \text{Scale} \cdot \text{Translate} \cdot H$) with defined physical ground sample distance ($12.5\text{ px/cm}$).
 * 📄 **[Technical Report (PDF - Greek)](./HW3_Planar_Homography_Metric_Rectification.pdf)**
 
@@ -54,4 +54,43 @@ Algorithmic implementations in **Python (NumPy, OpenCV)** covering projective ge
 ## 🛠️ Tech Stack & Methods
 * **Language:** Python
 * **Libraries:** OpenCV (`cv2`), NumPy, SciPy
-* **Core Topics:** Epipolar Geometry, Projective Geometry, Camera Matrix Decomposition, SVD, QR Factorization, Homography, Perspective Correction, DLT
+* **Core Topics:** Projective Geometry, Vanishing Points, Camera Matrix Decomposition, SVD, RQ Factorization, Homography, Perspective Correction, DLT
+
+---
+
+## 📁 Repository Structure
+
+```
+├── hw1_affine_rectification/
+│   ├── affine_rectification.py      # Vanishing points, line at infinity, projective rectification
+│   ├── Brueghel.jpg                 # Input image
+│   └── results/                     # Rectified image and comparison figure
+├── hw2_dlt_calibration/
+│   ├── dlt_calibration.py           # DLT, SVD, RQ decomposition into K, R, X0
+│   ├── image_points_pix.txt         # 18 image points (pixels)
+│   ├── object_points_m.txt          # 18 object points (metres)
+│   └── results/output.txt           # Printed results
+├── hw3_metric_rectification/
+│   ├── select_points.py             # Helper: click control points on the image
+│   ├── metric_rectification.py      # Homography, RMSE, metric rectification
+│   ├── chessboard.jpg               # Input image (40 x 40 cm board)
+│   └── results/                     # Rectified image and image with control points
+├── images/                          # Figures used in this README
+├── HW1_*.pdf, HW2_*.pdf, HW3_*.pdf  # Technical reports (Greek)
+└── requirements.txt
+```
+
+## ▶️ How to Run
+
+```bash
+git clone https://github.com/agathiba/computational-photogrammetry-computer-vision.git
+cd computational-photogrammetry-computer-vision
+pip install -r requirements.txt
+
+python hw1_affine_rectification/affine_rectification.py
+python hw2_dlt_calibration/dlt_calibration.py
+python hw3_metric_rectification/metric_rectification.py
+```
+
+* **HW1** opens a window where the four corners of the painting's frame are selected with the mouse (top-left, top-right, bottom-right, bottom-left). Set `INTERACTIVE = False` at the top of the script to reuse the points from the report instead.
+* **HW2** and **HW3** run without any interaction and print their results to the console; output images are saved in each `results/` folder.
