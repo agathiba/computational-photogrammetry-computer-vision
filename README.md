@@ -31,6 +31,9 @@ Algorithmic implementations in **Python (NumPy, OpenCV)** covering projective ge
   * **Matrix Decomposition (RQ):** Decomposed submatrix $B_{3 \times 3}$ via RQ factorization to extract:
     * **Camera Intrinsic Matrix ($K$):** Calibrated focal length ($c = 2472.02$), principal point $(x_0, y_0) = (-36.8, -17.9)$, skew, and relative scale factor.
     * **Extrinsic Parameters:** Rotation matrix $R$ (Euler angles: $\omega, \varphi, \kappa$) and camera projection center $X_0 = -B^{-1} p_4$.
+  * **Sign normalization:** RQ decomposition is unique only up to the signs of the diagonal of $K$. The code fixes the overall sign of $P$ so that $\det(B) > 0$ and multiplies $K$ and $R$ by $T = \mathrm{diag}(\mathrm{sign}(K_{ii}))$, giving positive focal lengths and a proper rotation ($\det R = +1$) without changing $P$.
+
+  > **Note:** this normalization was added after the original report. The report lists a relative scale deviation $m = -1.998$ and a roll of $179.6°$, which came from the sign ambiguity; with the corrected decomposition, $m = -0.002$ (practically square pixels) and the reprojection error is unchanged ($\sigma_0 = 0.46$ px).
 * 📄 **[Technical Report (PDF - Greek)](./HW2_Projection_Matrix_DLT_Calibration.pdf)**
 
 ---

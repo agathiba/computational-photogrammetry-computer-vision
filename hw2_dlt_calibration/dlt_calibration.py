@@ -60,9 +60,21 @@ sigma_o = np.sqrt(np.sum(squared_errors) / r)
 
 # ---- Step 5: Decompose projection matrix P into intrinsic matrix K, rotation matrix R, and camera center X0 ----
 
+# P is defined only up to scale (including sign). Choose the sign so that
+# det(B) > 0, which guarantees a proper rotation matrix (det(R) = +1).
+if np.linalg.det(P[:, :3]) < 0:
+    P = -P
+
 B = P[:, :3]  # Extract left 3x3 submatrix (contains intrinsic and rotation)
 p4 = P[:, 3]  # Extract last column vector (translation component)
 K, R = rq(B)  # Perform RQ decomposition on B to get intrinsic matrix K and rotation matrix R
+
+# RQ decomposition is unique only up to the signs of the diagonal of K.
+# Force a positive diagonal (positive focal lengths): K -> K T, R -> T R,
+# where T = diag(sign(K_ii)) and T @ T = I, so K @ R is unchanged.
+T = np.diag(np.sign(np.diag(K)))
+K = K @ T
+R = T @ R
 
 # Normalize K so that K[2,2] = 1
 K = K / K[2, 2]
